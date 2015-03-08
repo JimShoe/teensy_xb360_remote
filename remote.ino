@@ -69,7 +69,8 @@ unsigned long a_1 = -2146470810;  // context (c)
 unsigned long a_2 = -2146438042;
 unsigned long b_1 = -2146438107;  // (backspace)
 unsigned long b_2 = -2146470875;
-
+unsigned long input_1 = -2146438134;  // (alt-tab)
+unsigned long input_2 = -2146470902;
 
 IRrecv irrecv(RECV_PIN);
 
@@ -83,7 +84,9 @@ void setup()
 
 void loop() {
   if (irrecv.decode(&results)) {             // Did we received ir data?
-    //Serial.println(results.value, HEX);
+//    code = results.value;
+//    Serial.println(code);
+
     if (results.value != code) {             // Did we get a new code?
       code = results.value;                  // Save the new code.
       t_save = millis();                     // Save the time we got a new code.
@@ -102,7 +105,7 @@ void loop() {
     irrecv.resume();                            // Receive the next value
   }
   else{                                         // Didn't receive a code
-    if((millis()-t) > 100 && hold_flag == 1){   // check for hold and unhold 
+    if(hold_flag == 1 && (millis()-t) > 100){   // check for hold and unhold 
       unhold_key();                             // unhold kay
     } 
   }
@@ -169,6 +172,10 @@ void set_keys(long code){
        }
        if(code == a_1 || code == a_2){
          Keyboard.set_key1(KEY_C);
+       }
+       if(code == input_1 || code == input_2){
+         Keyboard.set_modifier(MODIFIERKEY_ALT);
+         Keyboard.set_key1(KEY_TAB);
        }
 }
 void press_key(long code){
